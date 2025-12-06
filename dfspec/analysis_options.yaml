@@ -1,0 +1,19 @@
+# Configuracion de analisis estatico para DFSpec
+# Usa very_good_analysis para linting estricto
+
+include: package:very_good_analysis/analysis_options.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+
+linter:
+  rules:
+    # Relajar algunas reglas para CLI
+    public_member_api_docs: false
+    lines_longer_than_80_chars: false
+
+    # Mantener estrictas
+    prefer_single_quotes: true
+    always_use_package_imports: true

@@ -1,0 +1,45 @@
+# Archivos de sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs y editores
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Archivos de Claude Code
+.claude/
+
+# Logs
+*.log
+logs/
+
+# Archivos temporales
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Backups
+*.bak
+*.backup
+
+# Archivos de configuracion local (no commitear)
+.env
+.env.local
+*.local.md
+
+# Notas personales
+notes/
+TODO.md
+NOTES.md
