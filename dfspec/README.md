@@ -2,19 +2,32 @@
 
 **Spec-Driven Development para Flutter/Dart**
 
+[![Dart](https://img.shields.io/badge/Dart-%5E3.10.1-blue)](https://dart.dev)
+[![Tests](https://img.shields.io/badge/tests-121%20passing-green)](test/)
+[![Analysis](https://img.shields.io/badge/analysis-0%20issues-green)](analysis_options.yaml)
+
 DFSpec es una herramienta CLI que implementa desarrollo guiado por especificaciones con agentes especializados y TDD estricto.
+
+## Caracteristicas
+
+- **4 comandos CLI**: `init`, `install`, `generate`, `agents`
+- **13 comandos slash** para Claude Code
+- **6 tipos de especificacion**: feature, architecture, security, performance, api, plan
+- **11 agentes especializados** para desarrollo Flutter/Dart
+- **121 tests** con cobertura ~85%
+- **Linting estricto** con very_good_analysis
 
 ## Instalacion
 
 ```bash
-# Desde pub.dev (proximamente)
-dart pub global activate dfspec
-
 # Desde fuente
-git clone https://github.com/user/dfspec.git
-cd dfspec
+git clone https://github.com/juansuarez-pragma/agentes-dart-flutter.git
+cd agentes-dart-flutter/dfspec
 dart pub get
 dart pub global activate --source path .
+
+# Verificar instalacion
+dfspec --version
 ```
 
 ## Uso Rapido
@@ -90,7 +103,6 @@ dfspec gen -t security "Auth"  # Con flag de tipo
 dfspec gen -a "Juan" "Mi Spec" # Con autor
 ```
 
-Tipos disponibles:
 | Tipo | Descripcion |
 |------|-------------|
 | `feature` | Especificacion de funcionalidad |
@@ -114,8 +126,6 @@ dfspec agents --json               # Salida JSON
 
 ## Agentes Especializados
 
-DFSpec incluye 11 agentes especializados:
-
 | Agente | Comando | Funcion |
 |--------|---------|---------|
 | dforchestrator | `/df-orchestrate` | Coordinacion de agentes |
@@ -134,21 +144,21 @@ DFSpec incluye 11 agentes especializados:
 
 13 comandos slash para Claude Code:
 
-```
-/df-spec        - Crear/analizar especificaciones
-/df-plan        - Generar plan de implementacion
-/df-implement   - Implementar con TDD
-/df-test        - Generar y ejecutar tests
-/df-review      - Revision SOLID
-/df-security    - Analisis OWASP
-/df-performance - Optimizacion 60fps
-/df-docs        - Generar documentacion
-/df-verify      - Verificar vs spec
-/df-status      - Estado del proyecto
-/df-orchestrate - Orquestar agentes
-/df-deps        - Gestionar dependencias
-/df-quality     - Analisis de calidad
-```
+| Comando | Descripcion |
+|---------|-------------|
+| `/df-spec` | Crear/analizar especificaciones |
+| `/df-plan` | Generar plan de implementacion |
+| `/df-implement` | Implementar con TDD |
+| `/df-test` | Generar y ejecutar tests |
+| `/df-review` | Revision SOLID |
+| `/df-security` | Analisis OWASP |
+| `/df-performance` | Optimizacion 60fps |
+| `/df-docs` | Generar documentacion |
+| `/df-verify` | Verificar vs spec |
+| `/df-status` | Estado del proyecto |
+| `/df-orchestrate` | Orquestar agentes |
+| `/df-deps` | Gestionar dependencias |
+| `/df-quality` | Analisis de calidad |
 
 ## Flujo de Trabajo
 
@@ -194,10 +204,6 @@ agents:
 ## Desarrollo
 
 ```bash
-# Clonar
-git clone https://github.com/user/dfspec.git
-cd dfspec
-
 # Dependencias
 dart pub get
 
@@ -207,10 +213,42 @@ dart test
 # Analisis
 dart analyze
 
+# Fix automatico
+dart fix --apply
+
 # Ejecutar
 dart run bin/dfspec.dart --help
 ```
 
+## Estructura del Proyecto
+
+```
+dfspec/
+├── bin/
+│   └── dfspec.dart          # Entry point
+├── lib/
+│   ├── dfspec.dart          # Library export
+│   └── src/
+│       ├── commands/        # Comandos CLI
+│       ├── generators/      # Generadores de specs
+│       ├── models/          # Modelos de datos
+│       ├── templates/       # Templates de artefactos
+│       └── utils/           # Utilidades
+├── test/                    # 121 tests
+├── example/                 # Ejemplo de uso
+├── analysis_options.yaml    # Linting config
+└── pubspec.yaml             # Dependencias
+```
+
+## Calidad de Codigo
+
+- **0 errores** en `dart analyze`
+- **121 tests** pasando
+- **Linting estricto** con very_good_analysis
+- **Excepciones personalizadas** para error handling
+- **Logger testeable** con inyeccion de dependencias
+- **Clases inmutables** con `@immutable`
+
 ## Licencia
 
-MIT License - Ver [LICENSE](LICENSE)
+MIT License

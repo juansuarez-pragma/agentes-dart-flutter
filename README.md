@@ -2,6 +2,22 @@
 
 Sistema de agentes especializados para desarrollo de proyectos Dart/Flutter siguiendo Clean Architecture, TDD estricto y mejores practicas del ecosistema.
 
+## Proyectos
+
+### DFSpec CLI
+
+Herramienta CLI para Spec-Driven Development. Ver [dfspec/README.md](dfspec/README.md).
+
+```bash
+# Instalar
+cd dfspec && dart pub global activate --source path .
+
+# Uso rapido
+dfspec init mi-proyecto
+dfspec install --all
+dfspec generate feature "Mi Feature"
+```
+
 ## Descripcion
 
 Este repositorio contiene 11 agentes especializados que trabajan de forma coordinada para:
@@ -15,50 +31,39 @@ Este repositorio contiene 11 agentes especializados que trabajan de forma coordi
 
 ### Orquestador Central
 
-| Agente | Descripcion |
-|--------|-------------|
-| `dforchestrator` | Punto de entrada. Clasifica solicitudes, decide recursos (MCP/agentes), coordina ejecucion en modos secuencial, paralelo o hibrido |
+| Agente | Comando | Descripcion |
+|--------|---------|-------------|
+| `dforchestrator` | `/df-orchestrate` | Punto de entrada. Clasifica solicitudes, coordina ejecucion |
 
 ### Agentes de Planificacion
 
-| Agente | Descripcion |
-|--------|-------------|
-| `dfplanner` | Arquitecto investigador. Explora codebase, consulta mejores practicas, disena planes verificables con criterios de aceptacion |
+| Agente | Comando | Descripcion |
+|--------|---------|-------------|
+| `dfplanner` | `/df-plan` | Arquitecto investigador. Disena planes verificables |
 
 ### Agentes de Validacion
 
-| Agente | Descripcion |
-|--------|-------------|
-| `dfsolid` | Guardian de calidad. Audita SOLID, YAGNI, DRY y anti-patterns especificos de Flutter |
-| `dfsecurity` | Guardian de seguridad. Audita OWASP Mobile Top 10, Platform Channels, WebView, deep linking |
-| `dfdependencies` | Guardian de dependencias. Previene slopsquatting, valida paquetes en pub.dev, detecta APIs deprecadas |
+| Agente | Comando | Descripcion |
+|--------|---------|-------------|
+| `dfsolid` | `/df-review` | Guardian de calidad. Audita SOLID, YAGNI, DRY |
+| `dfsecurity` | `/df-security` | Guardian de seguridad. Audita OWASP Mobile Top 10 |
+| `dfdependencies` | `/df-deps` | Guardian de dependencias. Valida paquetes en pub.dev |
 
 ### Agentes de Implementacion
 
-| Agente | Descripcion |
-|--------|-------------|
-| `dfimplementer` | Desarrollador TDD. Escribe tests ANTES del codigo, implementa minimo para pasar, refactoriza |
-| `dftest` | Especialista QA. Disena e implementa unit, widget, integration, E2E y golden tests |
+| Agente | Comando | Descripcion |
+|--------|---------|-------------|
+| `dfimplementer` | `/df-implement` | Desarrollador TDD. Test → Codigo → Refactor |
+| `dftest` | `/df-test` | Especialista QA. Unit, widget, integration tests |
 
 ### Agentes de Auditoria
 
-| Agente | Descripcion |
-|--------|-------------|
-| `dfcodequality` | Analista de metricas. Mide complejidad ciclomatica/cognitiva, detecta code smells |
-| `dfperformance` | Auditor de performance. Garantiza 60fps, detecta rebuilds innecesarios, memory leaks |
-| `dfdocumentation` | Especialista en docs. Audita Effective Dart, detecta rotting comments, valida README |
-| `dfverifier` | Auditor de completitud. Verifica implementacion vs plan, valida criterios de aceptacion |
-
-## Modos de Ejecucion
-
-El orquestador puede ejecutar en diferentes modos segun la solicitud:
-
-```
-MCP_ONLY      → Operacion directa sin razonamiento (ejecutar tests, formatear)
-AGENT_SINGLE  → Un agente especializado resuelve la tarea
-HYBRID        → Agente + MCPs combinados
-PIPELINE      → Multiples agentes en secuencia coordinada
-```
+| Agente | Comando | Descripcion |
+|--------|---------|-------------|
+| `dfcodequality` | `/df-quality` | Analista de metricas. Complejidad, code smells |
+| `dfperformance` | `/df-performance` | Auditor de performance. Garantiza 60fps |
+| `dfdocumentation` | `/df-docs` | Especialista en documentacion |
+| `dfverifier` | `/df-verify` | Auditor de completitud vs especificacion |
 
 ## Pipeline Completo
 
@@ -82,6 +87,24 @@ dftest (validar cobertura)
 dfverifier (verificacion final)
 ```
 
+## Flujo de Trabajo con DFSpec
+
+```bash
+# 1. Inicializar proyecto
+dfspec init mi-proyecto
+
+# 2. Instalar comandos slash
+dfspec install --all
+
+# 3. Crear especificacion
+dfspec generate feature "Autenticacion OAuth"
+
+# 4. En Claude Code, usar comandos slash:
+/df-plan Autenticacion OAuth      # Planificar
+/df-implement Autenticacion OAuth # Implementar con TDD
+/df-verify Autenticacion OAuth    # Verificar
+```
+
 ## Principios Fundamentales
 
 ### TDD Estricto
@@ -103,25 +126,6 @@ lib/src/
 └── di/          → Inyeccion de dependencias
 ```
 
-### Manejo de Errores
-
-- Usar `Either<Failure, T>` de dartz para errores esperados
-- Entidades inmutables con Equatable
-- Tests con patron AAA y nombres en espanol
-
-## Checkpoints y Recovery
-
-El sistema mantiene checkpoints para recuperacion:
-
-| Checkpoint | Despues de | Contenido |
-|------------|------------|-----------|
-| CP_PLAN | dfplanner | Plan, criterios, arquitectura |
-| CP_DESIGN | dfsolid | Validacion SOLID, decisiones |
-| CP_SECURITY | dfsecurity | Reporte OWASP, vulnerabilidades |
-| CP_TDD | dfimplementer | Correspondencia 1:1 test-produccion |
-| CP_QUALITY | agentes calidad | Metricas, issues |
-| CP_TEST | dftest | Resultados, cobertura |
-
 ## Umbrales de Calidad
 
 | Metrica | Objetivo |
@@ -132,6 +136,22 @@ El sistema mantiene checkpoints para recuperacion:
 | LOC por archivo | <400 |
 | LOC por metodo | <40 |
 | Frame budget (Flutter) | <16ms |
+
+## Estructura del Repositorio
+
+```
+agents/
+├── dfspec/                 # CLI para Spec-Driven Development
+│   ├── lib/src/
+│   │   ├── commands/       # Comandos CLI
+│   │   ├── generators/     # Generadores de specs
+│   │   ├── models/         # Modelos de datos
+│   │   ├── templates/      # Templates de artefactos
+│   │   └── utils/          # Utilidades
+│   └── test/               # 121 tests
+├── CLAUDE.md               # Guia para Claude Code
+└── README.md               # Este archivo
+```
 
 ## Herramientas MCP
 
@@ -144,45 +164,6 @@ Los agentes utilizan las siguientes herramientas MCP:
 - `mcp__dart__pub` - Comandos pub (get, add, outdated)
 - `mcp__dart__pub_dev_search` - Buscar paquetes en pub.dev
 
-## Uso
-
-Los agentes estan disenados para ser invocados a traves de Claude Code. El orquestador (`dforchestrator`) es el punto de entrada recomendado que automaticamente selecciona y coordina los agentes apropiados.
-
-### Ejemplos de Solicitudes
-
-```
-"Implementa un sistema de favoritos para productos"
-→ Pipeline completo: dfplanner → dfsolid → ... → dfverifier
-
-"Revisa la seguridad del modulo de autenticacion"
-→ Agente unico: dfsecurity
-
-"Ejecuta los tests"
-→ MCP directo: mcp__dart__run_tests
-
-"Ejecuta tests y arregla los que fallen"
-→ Hibrido: mcp__dart__run_tests + dfimplementer
-```
-
-## Estructura del Repositorio
-
-```
-agents/
-├── dforchestrator.md   # Orquestador central
-├── dfplanner.md        # Arquitecto investigador
-├── dfsolid.md          # Guardian SOLID/YAGNI/DRY
-├── dfsecurity.md       # Guardian seguridad OWASP
-├── dfdependencies.md   # Guardian dependencias
-├── dfimplementer.md    # Desarrollador TDD
-├── dfdocumentation.md  # Especialista documentacion
-├── dfcodequality.md    # Analista metricas
-├── dfperformance.md    # Auditor performance
-├── dftest.md           # Especialista testing
-├── dfverifier.md       # Auditor completitud
-├── CLAUDE.md           # Guia para Claude Code
-└── README.md           # Este archivo
-```
-
 ## Licencia
 
-Uso interno.
+MIT License
