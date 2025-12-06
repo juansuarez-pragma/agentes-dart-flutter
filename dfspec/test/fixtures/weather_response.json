@@ -1,0 +1,14 @@
+{
+  "name": "Madrid",
+  "main": {
+    "temp": 25.5,
+    "humidity": 60
+  },
+  "weather": [
+    {
+      "description": "cielo claro",
+      "icon": "01d"
+    }
+  ],
+  "dt": 1701864000
+}

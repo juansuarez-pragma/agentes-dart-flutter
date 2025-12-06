@@ -1,0 +1,47 @@
+# Configuracion DFSpec
+# Spec-Driven Development para Flutter/Dart
+
+# ============================================
+# NOTA: Este archivo es parte del FRAMEWORK dfspec.
+# Los proyectos creados con dfspec tendran su propio
+# dfspec.yaml en su directorio raiz.
+# ============================================
+
+# ============================================
+# AGENTES HABILITADOS
+# ============================================
+agents:
+  - dforchestrator
+  - dfplanner
+  - dfsolid
+  - dfsecurity
+  - dfdependencies
+  - dfimplementer
+  - dftest
+  - dfcodequality
+  - dfperformance
+  - dfdocumentation
+  - dfverifier
+
+# ============================================
+# PLANTILLA PARA PROYECTOS NUEVOS
+# ============================================
+# Cuando se ejecuta /df-spec en un proyecto nuevo,
+# se crea un dfspec.yaml con esta estructura:
+#
+# project:
+#   name: [nombre]
+#   type: flutter_app | dart_package | dart_cli | flutter_plugin
+#   platforms: [android, ios, web, macos, linux, windows]
+#   state_management: bloc | riverpod | provider | none
+#   path: [ruta absoluta]
+#   configured: true
+#
+# directories:
+#   docs_dir: docs/specs
+#
+# features:
+#   [feature-name]:
+#     type: api_integration | auth | local_storage | ui_navigation
+#     status: specified | planned | implemented | verified
+#     ...
