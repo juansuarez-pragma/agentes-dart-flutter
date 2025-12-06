@@ -6,7 +6,71 @@
 [![Tests](https://img.shields.io/badge/tests-121%20passing-green)](test/)
 [![Analysis](https://img.shields.io/badge/analysis-0%20issues-green)](analysis_options.yaml)
 
-DFSpec es una herramienta CLI que implementa desarrollo guiado por especificaciones con agentes especializados y TDD estricto.
+DFSpec es una herramienta que implementa desarrollo guiado por especificaciones con agentes especializados y TDD estricto.
+
+## Modos de Uso
+
+DFSpec ofrece **dos modos de uso independientes**:
+
+| Modo | Descripcion | Instalacion | Alcance |
+|------|-------------|-------------|---------|
+| **Slash Commands** | Comandos dentro de Claude Code | Solo clonar repo | Local a la sesion |
+| **CLI Global** | Comandos desde cualquier terminal | Activacion global | Todo el sistema |
+
+### Modo 1: Slash Commands en Claude Code (Recomendado)
+
+Este modo **NO requiere instalacion global**. Los comandos funcionan dentro de Claude Code y no modifican tu sistema.
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/juansuarez-pragma/agentes-dart-flutter.git
+
+# 2. Abrir Claude Code en el directorio dfspec
+cd agentes-dart-flutter/dfspec
+claude  # o abrir con tu IDE
+
+# 3. Usar los slash commands directamente
+/df-spec mi-feature
+/df-plan mi-feature
+/df-implement mi-feature
+```
+
+**Caracteristicas:**
+- No modifica el sistema del usuario
+- Comandos disponibles solo dentro de Claude Code
+- Funciona inmediatamente despues de clonar
+- Los comandos estan en `.claude/commands/`
+
+### Modo 2: CLI Global (Opcional)
+
+Este modo instala `dfspec` como comando global en tu sistema. **Modifica tu equipo** agregando ejecutables al PATH.
+
+```bash
+# 1. Clonar e instalar
+git clone https://github.com/juansuarez-pragma/agentes-dart-flutter.git
+cd agentes-dart-flutter/dfspec
+dart pub get
+
+# 2. Activar globalmente (MODIFICA TU SISTEMA)
+dart pub global activate --source path .
+
+# 3. Verificar instalacion
+dfspec --version
+
+# Para desinstalar:
+dart pub global deactivate dfspec
+```
+
+**Que hace la activacion global:**
+- Instala el ejecutable en `~/.pub-cache/bin/dfspec`
+- Agrega symlink al PATH de Dart
+- Permite usar `dfspec` desde cualquier directorio
+- Persiste despues de cerrar la terminal
+
+**Cuando usar CLI global:**
+- Quieres usar `dfspec init`, `dfspec generate` desde terminal
+- Necesitas integrar con scripts de CI/CD
+- Prefieres terminal sobre Claude Code
 
 ## Caracteristicas
 
@@ -17,36 +81,19 @@ DFSpec es una herramienta CLI que implementa desarrollo guiado por especificacio
 - **121 tests** con cobertura ~85%
 - **Linting estricto** con very_good_analysis
 
-## Instalacion
+## Uso Rapido con Slash Commands
 
 ```bash
-# Desde fuente
-git clone https://github.com/juansuarez-pragma/agentes-dart-flutter.git
-cd agentes-dart-flutter/dfspec
-dart pub get
-dart pub global activate --source path .
+# Flujo completo dentro de Claude Code:
 
-# Verificar instalacion
-dfspec --version
+/df-spec mi-feature          # Crear especificacion
+/df-plan mi-feature          # Generar plan de implementacion
+/df-implement mi-feature     # Implementar con TDD
+/df-verify mi-feature        # Verificar contra spec
+/df-status                   # Ver estado del proyecto
 ```
 
-## Uso Rapido
-
-```bash
-# Inicializar proyecto
-dfspec init mi-proyecto
-
-# Instalar comandos slash para Claude Code
-dfspec install --all
-
-# Generar especificacion
-dfspec generate feature "Autenticacion OAuth"
-
-# Ver agentes disponibles
-dfspec agents
-```
-
-## Comandos
+## Comandos CLI (Modo Global)
 
 ### `dfspec init [nombre]`
 
@@ -160,23 +207,23 @@ dfspec agents --json               # Salida JSON
 | `/df-deps` | Gestionar dependencias |
 | `/df-quality` | Analisis de calidad |
 
-## Flujo de Trabajo
+## Flujo de Trabajo Recomendado
 
 ```
 1. Crear especificacion
-   dfspec generate feature "Mi Feature"
+   /df-spec mi-feature
 
 2. Revisar y completar spec
-   Editar specs/features/mi-feature.feature.md
+   Editar docs/specs/features/mi-feature.spec.md
 
 3. Generar plan
-   /df-plan Mi Feature
+   /df-plan mi-feature
 
 4. Implementar con TDD
-   /df-implement Mi Feature
+   /df-implement mi-feature
 
 5. Verificar
-   /df-verify Mi Feature
+   /df-verify mi-feature
 ```
 
 ## Configuracion
@@ -185,20 +232,24 @@ dfspec agents --json               # Salida JSON
 
 ```yaml
 # Configuracion DFSpec
-project_name: mi-proyecto
+project:
+  name: mi-proyecto
+  type: flutter_app
+  platforms:
+    - web
+    - android
+    - ios
+  state_management: riverpod
+  path: /ruta/al/proyecto
+  configured: true
 
-# Directorios
-spec_dir: specs
-output_dir: .claude/commands
-template_dir: templates
+directories:
+  docs_dir: docs/specs
 
-# Agentes habilitados
-agents:
-  - dforchestrator
-  - dfplanner
-  - dfimplementer
-  - dftest
-  - dfverifier
+features:
+  mi-feature:
+    type: api_integration
+    status: planned  # planned -> implemented -> verified
 ```
 
 ## Desarrollo
@@ -216,7 +267,7 @@ dart analyze
 # Fix automatico
 dart fix --apply
 
-# Ejecutar
+# Ejecutar localmente (sin instalar global)
 dart run bin/dfspec.dart --help
 ```
 
@@ -225,7 +276,7 @@ dart run bin/dfspec.dart --help
 ```
 dfspec/
 ├── bin/
-│   └── dfspec.dart          # Entry point
+│   └── dfspec.dart          # Entry point CLI
 ├── lib/
 │   ├── dfspec.dart          # Library export
 │   └── src/
@@ -234,6 +285,8 @@ dfspec/
 │       ├── models/          # Modelos de datos
 │       ├── templates/       # Templates de artefactos
 │       └── utils/           # Utilidades
+├── .claude/
+│   └── commands/            # Slash commands (13 archivos .md)
 ├── test/                    # 121 tests
 ├── example/                 # Ejemplo de uso
 ├── analysis_options.yaml    # Linting config
